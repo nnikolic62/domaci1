@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocetna</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid" id="slika">
+        
+            <img src="images/slika1.svg" class="image-fluid" id="ufc" alt="nema">
+        
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md text-center">
+                <button id="azuriraj" class="btn btn-lg btn-dark">Azuriraj podatke o borcima</button>
+                <script>
+                    document.getElementById("azuriraj").addEventListener("click", function(){
+                        document.location.href = "borac.php";
+                    })
+                </script>
+                <!-- DEFINISI NAVIGACIJU ZA DUGME AZURIRAJ -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <div class="col-md text-center">
+                <button id="prikaziBorce" class="btn btn-lg btn-dark">Prikazi borce</button>
+                <button id="sakrij1" class="btn btn-lg btn-outline-dark">Sakrij listu</button>
+
+                <div class="test"></div>
+                <!-- DEFINISI DUGMICE PRIKAZI I SAKRIJ -->
+            </div>
+
+            <div class="col-md text-center">
+                <button id="prikaziKategorije" class="btn btn-lg btn-dark">Prikazi kategorije boraca</button>
+                <button id="sort" class="btn btn-lg btn-primary">Sortiraj po nazivu</button>
+                <button id="sakrij2" class="btn btn-lg btn-outline-dark">Sakrij listu</button>
+
+                <script>
+                    document.getElementById("sort").style.display="none";
+                </script>
+                <!-- DEFINISI DUGMICE -->
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
