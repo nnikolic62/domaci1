@@ -12,51 +12,124 @@
 </head>
 <body>
     <?php
-        include "konekcija.php";
-        if(isset($_GET['akcija'])){
-            if($_GET['akcija'] == 'unesi'){
-    ?>
-    <h1>Unos novog borca</h1>
-    <form class="form-group" action="?akcija=unesi" method="post">
-        <label >ID: </label> <input class="form-control" type="text" name="ID"/></br>
-        <label >Ime: </label> <input class="form-control" type="text" name="Ime"/></br>
-        <label >Prezime: </label> <input class="form-control" type="text" name="Prezime"/></br>
-        <label >Skor: </label> <input class="form-control" type="text" name="Skor"/></br>
-        <label >KategorijaID: </label> <input class="form-control" type="text" name="KategorijaID"/></br>
-        <input class="btn btn-lg btn-dark" type="submit" name="unesi" value="Ubaci"/>
-    </form>
+    include "konekcija.php";
+if (isset ($_GET['akcija'])){
+if ($_GET['akcija'] == 'unos'){
+?>
+<h1>Unos novog borca</h1>
+<hr/>
+<form class="form-group" method="post" action="?akcija=unos">
+    <label>ID: </label> <input class="form-control" type="text" name="ID" /><br/>
+    <label>Ime: </label> <input class="form-control" type="text" name="ime" /><br/>
+    <label>Prezime: </label> <input class="form-control" type="text" name="prezime" /><br/>
+    <label>Skor: </label> <input class="form-control" type="text" name="rekord" /><br/>
+    <label>KategorijaID:</label> <input class="form-control" type="text" name="kategorijaID" /><br/>
+    <input class="btn btn-lg btn-dark" type="submit" name="unos" value="Ubaci" />
+    <!-- naziv post zahteva je unos? -->
+</form>
+<?php
+if (isset($_POST["unos"])){
+    if (isset($_POST['ID'])&&isset($_POST['ime'])&&isset($_POST['prezime'])&&isset($_POST['rekord'])&&isset($_POST['kategorijaID'])){
+        $ID = $_POST['ID'];
+        $ime = $_POST['ime'];
+        $prezime = $_POST['prezime'];
+        $rekord = $_POST['rekord'];
+        $kategorijaID = $_POST['kategorijaID'];
 
-    <?php
-        if(isset($_POST['unesi'])){
-        if(isset($_POST['ID']) && isset($_POST['Ime']) && isset($_POST['Prezime']) && isset($_POST['Skor']) && isset($_POST['KategorijaID'])){
-            $ID = isset($_POST['ID']);
-            $ime = $_POST['Ime'];
-            $prezime = $_POST['Prezime'];
-            $skor = $_POST['Skor'];
-            $kategorijaID = $_POST['KategorijaID'];
 
-            $sql="INSERT INTO igrac (IgracID,ImeIgraca,PrezimeIgraca,Rekord,kategorijaID) VALUES ('".$ID."', '".$ime."', '".$prezime."', '".$rekord."', '".$kategorijaID."')";
-            if($connection->query($sql)){
-                echo "Borac je uspesno dodat";
-                }else{
-                    echo "Borac nije dodat";
-                }
+$sql="INSERT INTO igrac (IgracID,ImeIgraca,PrezimeIgraca,Rekord,kategorijaID) VALUES ('".$ID."', '".$ime."', '".$prezime."', '".$rekord."', '".$kategorijaID."')";
+if ($connection->query($sql)){
+    echo "<p>Borac uspesno dodat</p>";
+} else {
+    echo "<p>Nastala je greska pri dodavanju borca</p>" . $mysqli->error;
+}
+} else {
+    echo "Nisu prosledjeni parametri!";
+            }
+        }
+    }
+}
+
+if(isset($_GET["akcija"]) && isset($_GET['IgracID'])){
+    $akcija = $_GET["akcija"];
+    $ID = $_GET["IgracID"];
+
+    switch($akcija){
+        case "obrisi":
+            $upit = "DELETE FROM igrac WHERE IgracID=" .$ID;
+            if(!$q=$connection->query($upit)){
+                echo "Nastala je greska pri izvodenju upita<br/>" . mysql_query();
+                die();
+            } else {
+                echo "<p>Brisanje borca je uspelo!</p>";
+            }
+        break;
+
+        case "izmeni_forma":
+            $upit = "SELECT IgracID, ImeIgraca, PrezimeIgraca, Rekord, KategorijaID FROM igrac WHERE IgracID=" .$ID;
+            if (!$q=$connection->query($upit)){
+                echo "<p>Nastala je greska pri izvodenju upita</p>" . mysql_query();
+                die();
+            } else {
+            if ($q->num_rows!=1){
+                echo "<p>Nepostojeci borac.</p>";
             }else{
-                echo "Nisu uneti podaci";
+                $igrac = $q->fetch_object();
+                $igracID = $igrac->IgracID;
+                $ime = $igrac->ImeIgraca;
+                $prezime = $igrac->PrezimeIgraca;
+                $rekord = $igrac->Rekord;
+                $kategorijaID = $igrac->KategorijaID;
+                ?>
+                <h1>Izmena podataka o borcu</h1>
+                <hr/>
+                <form class="form-group" method="post" action="?akcija=izmena&IgracID=<?php echo $_GET['IgracID'];?>">
+                <label>Ime : </label> <input class="form-control" type="text" name="ime" value="<?php echo $ime;?>"/><br/>
+                <label>Prezime : </label> <input class="form-control" type="text" name="prezime" value="<?php echo $prezime;?>"/><br/>
+                <label>Skor : </label> <input class="form-control" type="text" name="rekord" value="<?php echo $rekord;?>"/><br/>
+                <label>KategorijaID : </label> <input class="form-control" type="text" name="kategorijaID" value="<?php echo $kategorijaID;?>"/><br/>
+                <input class="btn btn-lg btn-dark" type="submit" name="unos" value="Potvrdi" />
+                </form>
+                <!-- sto ovde ne definisemo da li je setovan post zahtev izmena, a ne da nastavljamo switch -->
+                <?php
             }
         }
-            }
-        }
-    ?>
-    <?php
-        $sql = "SELECT * FROM igrac";
-        if (!$q=$connection->query($sql)){
-        echo "Nastala je greska pri izvodenju upita<br>" . mysql_query();
-        die();
-        }
-        if ($q->num_rows==0){
-        echo "Nema boraca za prikaz.";
-        }else{
+                case "izmena":
+                    if (isset ($_POST['ime']) && isset ($_POST['prezime']) && isset ($_POST['rekord']) && isset ($_POST['kategorijaID'])){
+                        $ime = $_POST['ime'];
+                        $prezime = $_POST['prezime'];
+                        $rekord = $_POST['rekord'];
+                        $katID = $_POST['kategorijaID'];
+                        $upit = "UPDATE igrac SET ImeIgraca='". $ime ."', PrezimeIgraca='". $prezime ."', Rekord='". $rekord ."', KategorijaID='" . $katID . "' WHERE IgracID=". $ID;
+
+                        if ($connection->query($upit)){
+                            if ($connection->affected_rows > 0 ){
+                                echo "<p>Podaci o borcu su uspesno izmenjeni.</p>";
+                            } else {
+                                echo "<p>Podaci o borcu nisu izmenjeni.</p>";
+                            }
+                        }else {
+                            echo "<p>Nastala je greška pri izmeni podataka o borcu.</p>" . mysql_error();
+                            } 
+                }else {
+                    echo "<p>Nisu prosleđeni parametri za izmenu";
+                }
+            break;
+            default:
+            echo "<p>Nepostojeća akcija!</p>";
+            break;
+    }
+}
+    
+  
+$sql = "SELECT * FROM igrac";
+if (!$q=$connection->query($sql)){
+    echo "Nastala je greska pri izvodenju upita<br>" . mysql_query();
+die();
+    }
+if ($q->num_rows==0){
+    echo "Nema boraca za prikaz.";
+}else{
     ?>
     <h1>Prikaz svih boraca</h1>
     <table  class="table table-stripped table-hover table-border">
@@ -88,6 +161,15 @@
     <?php
         }
     ?>
-    <a href="?akcija=unesi">Unos novog borca</a>
+    <a class="btn btn-lg btn-dark" href="?akcija=unos">Unos novog borca</a>
+    
+    <footer>
+        <button id="back" class="mt-2 btn btn-lg btn-outline-dark">Nazad na pocetnu</button>
+        <script>
+            document.getElementById("back").addEventListener("click", function(){
+                document.location.href = "index.html";
+            })
+        </script>
+    </footer>
 </body>
 </html>

@@ -26,7 +26,7 @@
                         document.location.href = "borac.php";
                     })
                 </script>
-                <!-- DEFINISI NAVIGACIJU ZA DUGME AZURIRAJ -->
+                
             </div>
         </div>
     </div>
@@ -37,8 +37,24 @@
                 <button id="prikaziBorce" class="btn btn-lg btn-dark">Prikazi borce</button>
                 <button id="sakrij1" class="btn btn-lg btn-outline-dark">Sakrij listu</button>
 
-                <div class="test"></div>
-                <!-- DEFINISI DUGMICE PRIKAZI I SAKRIJ -->
+                <div id="prikaz"></div>
+                <script>
+                    document.getElementById("sakrij1").addEventListener("click", function(){
+                        document.getElementById("prikaz").innerHTML = "";
+                    });
+                </script>
+                <script>
+                    document.getElementById("prikaziBorce").addEventListener("click", function () {
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                document.getElementById("prikaz").innerHTML = xhttp.responseText;
+                            }
+                        };
+                        xhttp.open("GET", "tabelaBorac.php", true);
+                        xhttp.send();
+                        });
+                </script>
             </div>
 
             <div class="col-md text-center">
@@ -46,10 +62,41 @@
                 <button id="sort" class="btn btn-lg btn-primary">Sortiraj po nazivu</button>
                 <button id="sakrij2" class="btn btn-lg btn-outline-dark">Sakrij listu</button>
 
+                <div id="prikaz1"></div>
                 <script>
                     document.getElementById("sort").style.display="none";
                 </script>
-                <!-- DEFINISI DUGMICE -->
+                <script>
+                    document.getElementById("sakrij2").addEventListener("click", function(){
+                        document.getElementById("prikaz1").innerHTML = "";
+                        document.getElementById("sort").style.display = "none";
+                    });
+                </script>
+                <script>
+                    document.getElementById("prikaziKategorije").addEventListener("click", function(){
+                        document.getElementById("sort").style.display = "inline";
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                document.getElementById("prikaz1").innerHTML = xhttp.responseText;
+                            }
+                        };
+                        xhttp.open("GET", "tabelaKategorija.php", true);
+                        xhttp.send();
+                    });
+                </script>
+                <script>
+                    document.getElementById("sort").addEventListener("click", function(){
+                        var xhttp = new XMLHttpRequest();
+                        xhttp.onreadystatechange = function () {
+                            if (this.readyState == 4 && this.status == 200) {
+                                document.getElementById("prikaz1").innerHTML = xhttp.responseText;
+                            }
+                        };
+                        xhttp.open("GET", "sortiranje.php", true);
+                        xhttp.send();
+                    });
+                </script>
             </div>
         </div>
     </div>
